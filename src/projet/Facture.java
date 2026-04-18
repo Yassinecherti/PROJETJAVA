@@ -1,5 +1,8 @@
 package projet;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+
 public class Facture {
 	  // Tarif fixe : 0.15 € par kWh
     public static final double TARIF_KWH = 0.15;
@@ -33,4 +36,18 @@ public class Facture {
     }
 
     public double getMontant() { return montant; }
+    public void sauvegarder() {
+        String sql = "INSERT INTO factures (montant,numcompteur, idclient) VALUES (?, ?, ?)";
+        try {
+            Connection conn = ConnexionDB.getConnexion();
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setDouble(1, this.montant);
+            stmt.setInt(2, this.compteur.getIdcomp());
+            stmt.setString(3, this.client.getId());
+            stmt.executeUpdate();
+            System.out.println("Facture sauvegardée !");
+        } catch (Exception e) {
+            System.out.println("Erreur : " + e.getMessage());
+        }
+    }
 }

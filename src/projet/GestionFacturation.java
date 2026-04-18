@@ -9,6 +9,7 @@ public class GestionFacturation {
     public GestionFacturation() {
         this.scanner = new Scanner(System.in);
     }
+    int i=0;
 
     public void ajouterClient() {
         System.out.print("ID client    : ");
@@ -19,8 +20,14 @@ public class GestionFacturation {
         String adresse = this.scanner.nextLine();
         System.out.print("Consommation (kWh) : ");
         double kwh = Double.parseDouble(this.scanner.nextLine());
-        this.clients.add(new Client(id, nom, adresse));
-        this.compteurs.add(new Compteur(id, kwh));
+        System.out.print("numero compteur    : ");
+        int numerocomp = Integer.parseInt(this.scanner.nextLine());
+        this.clients.add(new Client(nom, adresse));
+        this.clients.get(i).sauvegarder();
+        i++;
+        this.compteurs.add(new Compteur(id, kwh,numerocomp));
+        this.compteurs.get(i).sauvegarder();
+        i++;
         System.out.println("✓ Client ajouté avec succès.\n");
     }
 
@@ -31,6 +38,7 @@ public class GestionFacturation {
             for(int i = 0; i < this.clients.size(); ++i) {
                 Facture f = new Facture((Client)this.clients.get(i), (Compteur)this.compteurs.get(i));
                 f.afficher();
+                f.sauvegarder();
                 System.out.println();
             }
 
