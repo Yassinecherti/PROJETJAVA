@@ -9,11 +9,8 @@ public class GestionFacturation {
     public GestionFacturation() {
         this.scanner = new Scanner(System.in);
     }
-    int i=0;
 
     public void ajouterClient() {
-        System.out.print("ID client    : ");
-        String id = this.scanner.nextLine();
         System.out.print("Nom          : ");
         String nom = this.scanner.nextLine();
         System.out.print("Adresse      : ");
@@ -22,12 +19,13 @@ public class GestionFacturation {
         double kwh = Double.parseDouble(this.scanner.nextLine());
         System.out.print("numero compteur    : ");
         int numerocomp = Integer.parseInt(this.scanner.nextLine());
-        this.clients.add(new Client(nom, adresse));
-        this.clients.get(i).sauvegarder();
-        i++;
-        this.compteurs.add(new Compteur(id, kwh,numerocomp));
-        this.compteurs.get(i).sauvegarder();
-        i++;
+        Client client=new Client(nom, adresse);
+        this.clients.add(client);
+        client.sauvegarder();
+        System.out.print("ID client    : "+client.getId());
+        Compteur compteur=new Compteur(client.getId(), kwh,numerocomp);
+        this.compteurs.add(compteur);
+        compteur.sauvegarder();
         System.out.println("✓ Client ajouté avec succès.\n");
     }
 
