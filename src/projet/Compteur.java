@@ -4,33 +4,37 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 
 public class Compteur {
-		private int numcomp;
+		private long numcomp;
 		private String clientId;
 	    private double consommation;
 	    
 
-	    public int getIdcomp() {
+	    public long getNumcomp() {
 			return numcomp;
 		}
 
-		public void setIdcomp(int idcomp) {
-			if(idcomp>Math.pow(10,14)) {
+		public void setNumcomp(long idcomp) {
+			if(idcomp>=Math.pow(10,13)||idcomp<Math.pow(10,14)) {
 				numcomp = idcomp;
 			}else {
 				System.out.println("Ce numero est incorrect,c'est d'un numero à 14 chiffres");
+				numcomp=-1;
 			}
 		}
 
-		public Compteur(String clientId, double consommation,int Idcomp) {
+		public Compteur(String clientId, double consommation,long Idcomp) {
 	        this.clientId = clientId;
 	        this.consommation = consommation;
-	        setIdcomp(Idcomp);
+	        setNumcomp(Idcomp);
 	    }
 
 	    public String getClientId() {
 	        return this.clientId;
 	    }
-
+	    
+	    public void setClientId(String c) {
+	        this.clientId = c;
+	    }
 	    public double getConsommation() {
 	        return this.consommation;
 	    }
@@ -43,7 +47,7 @@ public class Compteur {
 	        try {
 	            Connection conn = ConnexionDB.getConnexion();
 	            PreparedStatement stmt = conn.prepareStatement(sql);
-	            stmt.setInt(1, this.numcomp);
+	            stmt.setLong(1, this.numcomp);
 	            stmt.setDouble(2, this.consommation);
 	            stmt.setString(3, this.clientId);
 	            stmt.executeUpdate();

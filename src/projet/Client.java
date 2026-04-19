@@ -36,7 +36,7 @@ public class Client {
 	            stmt.setString(2, this.nom);
 	            stmt.setString(3, this.adresse);
 	            stmt.executeUpdate();
-	            System.out.println("Client sauvegardé !");
+	            
 	        } catch (Exception e) {
 	            System.out.println("Erreur : " + e.getMessage());
 	        }

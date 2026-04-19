@@ -15,17 +15,27 @@ public class GestionFacturation {
         String nom = this.scanner.nextLine();
         System.out.print("Adresse      : ");
         String adresse = this.scanner.nextLine();
+        System.out.print("Numero compteur (14 chiffres) : ");
+        long numerocomp = Long.parseLong(this.scanner.nextLine());
         System.out.print("Consommation (kWh) : ");
         double kwh = Double.parseDouble(this.scanner.nextLine());
-        System.out.print("numero compteur    : ");
-        int numerocomp = Integer.parseInt(this.scanner.nextLine());
-        Client client=new Client(nom, adresse);
+
+        // 1. Vérifier le numéro EN PREMIER avant tout ✅
+        String numero = String.valueOf(numerocomp);
+        if (numero.length() != 14) {
+            System.out.println("❌ Numéro invalide - rien sauvegardé !");
+            return; // ← on sort AVANT de créer ou sauvegarder quoi que ce soit
+        }
+
+        // 2. Seulement si valide → on sauvegarde ✅
+        Client client = new Client(nom, adresse);
         this.clients.add(client);
         client.sauvegarder();
-        System.out.print("ID client    : "+client.getId());
-        Compteur compteur=new Compteur(client.getId(), kwh,numerocomp);
+
+        Compteur compteur = new Compteur(client.getId(), kwh, numerocomp);
         this.compteurs.add(compteur);
         compteur.sauvegarder();
+
         System.out.println("✓ Client ajouté avec succès.\n");
     }
 

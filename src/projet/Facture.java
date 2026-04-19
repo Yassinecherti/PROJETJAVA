@@ -42,7 +42,7 @@ public class Facture {
             Connection conn = ConnexionDB.getConnexion();
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setDouble(1, this.montant);
-            stmt.setInt(2, this.compteur.getIdcomp());
+            stmt.setLong(2, this.compteur.getNumcomp());
             stmt.setString(3, this.client.getId());
             stmt.executeUpdate();
             System.out.println("Facture sauvegardée !");
