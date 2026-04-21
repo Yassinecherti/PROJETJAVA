@@ -9,7 +9,5 @@ public class Id  {
 	    public final int getId() {
 	      return id;
 	   }
-	 
-	    
 
 }
