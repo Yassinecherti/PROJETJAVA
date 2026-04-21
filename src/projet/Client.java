@@ -7,7 +7,7 @@ public class Client {
 	  private int id;
 	    private String nom;
 	    private String adresse;
-	    private Id di;
+	    private Id di= new Id();
 
 	    
 	    public Client( String nom, String adresse) {

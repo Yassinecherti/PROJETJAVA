@@ -20,15 +20,14 @@ public class GestionFacturation {
         System.out.print("Consommation (kWh) : ");
         double kwh = Double.parseDouble(this.scanner.nextLine());
 
-        // 1. Vérifier le numéro EN PREMIER avant tout ✅
         String numero = String.valueOf(numerocomp);
         if (numero.length() != 14) {
             System.out.println("❌ Numéro invalide - rien sauvegardé !");
-            return; // ← on sort AVANT de créer ou sauvegarder quoi que ce soit
+            return; 
         }
 
-        // 2. Seulement si valide → on sauvegarde ✅
         Client client = new Client(nom, adresse);
+        System.out.println(client.getId());
         this.clients.add(client);
         client.sauvegarder();
 
