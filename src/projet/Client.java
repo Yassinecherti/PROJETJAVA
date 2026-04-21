@@ -8,6 +8,7 @@ public class Client {
 	    private String nom;
 	    private String adresse;
 	    private Id di;
+	    
 
 	    
 	    public Client( String nom, String adresse) {

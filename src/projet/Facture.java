@@ -21,6 +21,7 @@ public class Facture {
     private double calculerMontant() {
         return compteur.getConsommation() * TARIF_KWH;
     }
+    
 
     // Affichage de la facture complète
     public void afficher() {
