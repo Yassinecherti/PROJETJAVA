@@ -5,7 +5,7 @@ import java.sql.PreparedStatement;
 
 public class Compteur {
 		private long numcomp;
-		private String clientId;
+		private int clientId;
 	    private double consommation;
 	    
 
@@ -22,17 +22,17 @@ public class Compteur {
 			}
 		}
 
-		public Compteur(String clientId, double consommation,long Idcomp) {
+		public Compteur(int clientId, double consommation,long Idcomp) {
 	        this.clientId = clientId;
 	        this.consommation = consommation;
 	        setNumcomp(Idcomp);
 	    }
 
-	    public String getClientId() {
+	    public int getClientId() {
 	        return this.clientId;
 	    }
 	    
-	    public void setClientId(String c) {
+	    public void setClientId(int c) {
 	        this.clientId = c;
 	    }
 	    public double getConsommation() {
@@ -49,7 +49,7 @@ public class Compteur {
 	            PreparedStatement stmt = conn.prepareStatement(sql);
 	            stmt.setLong(1, this.numcomp);
 	            stmt.setDouble(2, this.consommation);
-	            stmt.setString(3, this.clientId);
+	            stmt.setInt(3, this.clientId);
 	            stmt.executeUpdate();
 	            System.out.println("Compteur sauvegardé !");
 	        } catch (Exception e) {

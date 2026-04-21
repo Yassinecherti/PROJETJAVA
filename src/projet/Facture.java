@@ -43,7 +43,7 @@ public class Facture {
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setDouble(1, this.montant);
             stmt.setLong(2, this.compteur.getNumcomp());
-            stmt.setString(3, this.client.getId());
+            stmt.setInt(3, this.client.getId());
             stmt.executeUpdate();
             System.out.println("Facture sauvegardée !");
         } catch (Exception e) {
