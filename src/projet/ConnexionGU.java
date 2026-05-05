@@ -556,3 +556,4 @@ public class ConnexionGU extends JFrame {
         lblErreurInscription.setText(msg);
     }
 }
+

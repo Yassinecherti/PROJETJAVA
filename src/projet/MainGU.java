@@ -776,3 +776,4 @@ public class MainGU extends JFrame {
         if (statusLabel != null) statusLabel.setText(msg);
     }
 }
+
