@@ -8,8 +8,7 @@ public class Compteur {
 		private int clientId;
 	    private double consommation;
 	    
-
-	    public long getNumcomp() {
+        public long getNumcomp() {
 			return numcomp;
 		}
 

@@ -145,7 +145,12 @@ public class MainGU extends JFrame {
         nav.setBackground(CARD);
         nav.setBorder(new EmptyBorder(10, 10, 10, 10));
         nav.setAlignmentX(Component.LEFT_ALIGNMENT);
-
+        
+        JButton bNouvelle = navBtn("+ Nouvelle Facture", ACCENT);
+        bNouvelle.addActionListener(e -> afficherFormulaireFacture());
+        nav.add(bNouvelle);
+        nav.add(Box.createVerticalStrut(8));
+        
         JButton bQuit = navBtn("Quitter", DANGER);
         bQuit.addActionListener(e -> System.exit(0));
         nav.add(bQuit);
@@ -774,6 +779,53 @@ public class MainGU extends JFrame {
 
     private void setStatus(String msg) {
         if (statusLabel != null) statusLabel.setText(msg);
+    }
+    
+    private void afficherFormulaireFacture() {
+        if (currentClientId == -1) {
+            JOptionPane.showMessageDialog(this,
+                "Veuillez d'abord rechercher un client.",
+                "Aucun client", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        JTextField tfNumComp = new JTextField();
+        JTextField tfConso   = new JTextField();
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.add(new JLabel("N° Compteur (14 chiffres) :"));
+        panel.add(tfNumComp);
+        panel.add(Box.createVerticalStrut(10));
+        panel.add(new JLabel("Consommation (kWh) :"));
+        panel.add(tfConso);
+
+        int result = JOptionPane.showConfirmDialog(this, panel,
+            "Nouvelle Facture", JOptionPane.OK_CANCEL_OPTION);
+
+        if (result == JOptionPane.OK_OPTION) {
+            try {
+                long numComp = Long.parseLong(tfNumComp.getText().trim());
+                double conso = Double.parseDouble(tfConso.getText().trim());
+
+                Client client = new Client(currentClientNom, currentClientAddr);
+                client.sauvegarder();
+
+                Compteur compteur = new Compteur(currentClientId, conso, numComp);
+                compteur.sauvegarder();
+
+                Facture facture = new Facture(client, compteur);
+                facture.sauvegarder();
+
+                setStatus("✅ Facture créée avec succès !");
+                chargerFacturesClient();
+
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this,
+                    "Erreur : " + e.getMessage(),
+                    "Erreur", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }
 }
 

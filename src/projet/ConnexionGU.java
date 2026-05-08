@@ -43,6 +43,7 @@ public class ConnexionGU extends JFrame {
 
     // ─────────────────────────────────────────────────────────
     public static void main(String[] args) {
+        InitDB.init();
         EventQueue.invokeLater(() -> {
             try { new ConnexionGU().setVisible(true); }
             catch (Exception e) { e.printStackTrace(); }
