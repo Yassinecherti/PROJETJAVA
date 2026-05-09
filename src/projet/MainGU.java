@@ -7,8 +7,6 @@ import java.awt.*;
 import java.awt.print.*;
 import java.sql.*;
 
-// ── iText PDF ────────────────────────────────────────────────
-
 public class MainGU extends JFrame {
 
     private static final long serialVersionUID = 1L;
@@ -34,7 +32,6 @@ public class MainGU extends JFrame {
     private String currentClientNom  = "";
     private String currentClientAddr = "";
 
-    // Données de la facture sélectionnée (pour le PDF)
     private String selectedIdFact  = "";
     private String selectedNumComp = "";
     private String selectedConso   = "";
@@ -42,11 +39,10 @@ public class MainGU extends JFrame {
     private String selectedDate    = "";
 
     public static void main(String[] args) {
-        	 EventQueue.invokeLater(() -> {
-        	        try { new ConnexionGU().setVisible(true); }
-        	        catch (Exception e) { e.printStackTrace(); }
-        	    });
-        	 
+        EventQueue.invokeLater(() -> {
+            try { new ConnexionGU().setVisible(true); }
+            catch (Exception e) { e.printStackTrace(); }
+        });
     }
 
     public MainGU() {
@@ -63,7 +59,6 @@ public class MainGU extends JFrame {
         add(buildStatusBar(), BorderLayout.SOUTH);
     }
 
-    // ── SIDEBAR ───────────────────────────────────────────────
     private JPanel buildSidebar() {
         JPanel side = new JPanel();
         side.setLayout(new BoxLayout(side, BoxLayout.Y_AXIS));
@@ -93,7 +88,6 @@ public class MainGU extends JFrame {
         logo.add(Box.createVerticalStrut(4));
         logo.add(t2);
 
-        // Recherche
         JPanel searchPanel = new JPanel();
         searchPanel.setLayout(new BoxLayout(searchPanel, BoxLayout.Y_AXIS));
         searchPanel.setBackground(CARD);
@@ -145,12 +139,12 @@ public class MainGU extends JFrame {
         nav.setBackground(CARD);
         nav.setBorder(new EmptyBorder(10, 10, 10, 10));
         nav.setAlignmentX(Component.LEFT_ALIGNMENT);
-        
+
         JButton bNouvelle = navBtn("+ Nouvelle Facture", ACCENT);
         bNouvelle.addActionListener(e -> afficherFormulaireFacture());
         nav.add(bNouvelle);
         nav.add(Box.createVerticalStrut(8));
-        
+
         JButton bQuit = navBtn("Quitter", DANGER);
         bQuit.addActionListener(e -> System.exit(0));
         nav.add(bQuit);
@@ -225,7 +219,6 @@ public class MainGU extends JFrame {
         return b;
     }
 
-    // ── CENTER ────────────────────────────────────────────────
     private JPanel buildCenter() {
         JPanel center = new JPanel(new BorderLayout());
         center.setBackground(BG);
@@ -254,7 +247,6 @@ public class MainGU extends JFrame {
         titles.add(Box.createVerticalStrut(4));
         titles.add(h2);
 
-        // ── Boutons header : Imprimer + Exporter PDF ──────────
         JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
         btnPanel.setBackground(BG);
 
@@ -296,7 +288,6 @@ public class MainGU extends JFrame {
         return b;
     }
 
-    // ── TABLEAU ───────────────────────────────────────────────
     private JPanel buildTableArea() {
         JPanel area = new JPanel(new BorderLayout(0, 8));
         area.setBackground(BG);
@@ -361,7 +352,6 @@ public class MainGU extends JFrame {
         return area;
     }
 
-    // ── REÇU ─────────────────────────────────────────────────
     private JPanel buildRecuPanel() {
         panelRecu = new JPanel(new BorderLayout());
         panelRecu.setBackground(BG);
@@ -389,7 +379,6 @@ public class MainGU extends JFrame {
         return p;
     }
 
-    // ── STATUS BAR ────────────────────────────────────────────
     private JPanel buildStatusBar() {
         JPanel bar = new JPanel(new FlowLayout(FlowLayout.LEFT, 16, 6));
         bar.setBackground(CARD);
@@ -401,9 +390,6 @@ public class MainGU extends JFrame {
         return bar;
     }
 
-    // ══════════════════════════════════════════════════════════
-    // LOGIQUE
-    // ══════════════════════════════════════════════════════════
     private void rechercherClient() {
         String q = tfRecherche.getText().trim();
         if (q.isEmpty()) { setStatus("Saisissez un nom ou un ID."); return; }
@@ -494,7 +480,6 @@ public class MainGU extends JFrame {
     }
 
     private void afficherRecu(int row) {
-        // Sauvegarder les données de la ligne sélectionnée pour le PDF
         selectedIdFact  = tableModel.getValueAt(row, 0).toString();
         selectedNumComp = tableModel.getValueAt(row, 1).toString();
         selectedConso   = tableModel.getValueAt(row, 2).toString();
@@ -564,7 +549,7 @@ public class MainGU extends JFrame {
         return s;
     }
 
-    // ── EXPORT PDF (iText) ────────────────────────────────────
+    // ── EXPORT PDF ────────────────────────────────────────────
     private void exporterPDF() {
         if (currentClientId == -1) {
             JOptionPane.showMessageDialog(this,
@@ -581,17 +566,25 @@ public class MainGU extends JFrame {
 
         // Choisir où sauvegarder
         JFileChooser chooser = new JFileChooser();
+        chooser.setCurrentDirectory(new java.io.File(System.getProperty("user.home") + "\\Desktop"));
         chooser.setSelectedFile(new java.io.File(
             "Facture_" + currentClientNom.replaceAll("\\s+", "_") + "_" + selectedIdFact + ".pdf"));
+        chooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Fichiers PDF", "pdf"));
+
         if (chooser.showSaveDialog(this) != JFileChooser.APPROVE_OPTION) return;
 
-        String chemin = chooser.getSelectedFile().getAbsolutePath();
-        if (!chemin.endsWith(".pdf")) chemin += ".pdf";
+        java.io.File fichier = chooser.getSelectedFile();
+        if (!fichier.getParentFile().exists()) {
+            JOptionPane.showMessageDialog(this,
+                "Dossier invalide ! Choisissez un dossier normal (Bureau, Documents...)",
+                "Erreur", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        String chemin = fichier.getAbsolutePath();
+        if (!chemin.toLowerCase().endsWith(".pdf")) chemin += ".pdf";
 
         try {
-            // ── Construction du PDF en pur Java ──────────────────
-
-            // Contenu texte de la facture
             StringBuilder contenu = new StringBuilder();
             contenu.append("================================================\n");
             contenu.append("          FACTURE D'ELECTRICITE                 \n");
@@ -612,7 +605,6 @@ public class MainGU extends JFrame {
             contenu.append("MONTANT TOTAL : ").append(selectedMontant).append(" EUR\n");
             contenu.append("================================================\n");
 
-            // ── Ecriture PDF manuel (format PDF minimal) ──────────
             writePDF(chemin, contenu.toString());
 
             setStatus("PDF genere : " + chemin);
@@ -628,14 +620,10 @@ public class MainGU extends JFrame {
         }
     }
 
-    // ── Générateur PDF minimal sans bibliothèque ─────────────────
     private void writePDF(String chemin, String texte) throws Exception {
         java.io.FileOutputStream fos = new java.io.FileOutputStream(chemin);
-
-        // Découper le texte en lignes
         String[] lignes = texte.split("\n");
 
-        // ── Préparer le flux de contenu ───────────────────────────
         StringBuilder stream = new StringBuilder();
         stream.append("BT\n");
         stream.append("/F1 11 Tf\n");
@@ -644,36 +632,28 @@ public class MainGU extends JFrame {
         int y = 750;
 
         for (String ligne : lignes) {
-            // Echapper les parenthèses et antislash pour PDF
             String safe = ligne
                 .replace("\\", "\\\\")
                 .replace("(", "\\(")
                 .replace(")", "\\)");
 
-            // Titre principal en gras simulé (taille 14)
             if (ligne.contains("FACTURE D'ELECTRICITE")) {
                 stream.append("/F1 14 Tf\n");
                 stream.append(x).append(" ").append(y).append(" Td\n");
                 stream.append("(").append(safe).append(") Tj\n");
                 stream.append("0 -18 Td\n");
                 stream.append("/F1 11 Tf\n");
-            }
-            // Ligne montant en gras simulé (taille 13)
-            else if (ligne.contains("MONTANT TOTAL")) {
+            } else if (ligne.contains("MONTANT TOTAL")) {
                 stream.append("/F1 13 Tf\n");
                 stream.append("(").append(safe).append(") Tj\n");
                 stream.append("0 -16 Td\n");
                 stream.append("/F1 11 Tf\n");
-            }
-            // Sections
-            else if (ligne.equals("CLIENT") || ligne.equals("DETAIL")) {
+            } else if (ligne.equals("CLIENT") || ligne.equals("DETAIL")) {
                 stream.append("/F1 12 Tf\n");
                 stream.append("(").append(safe).append(") Tj\n");
                 stream.append("0 -16 Td\n");
                 stream.append("/F1 11 Tf\n");
-            }
-            // Ligne normale
-            else {
+            } else {
                 stream.append("(").append(safe).append(") Tj\n");
                 stream.append("0 -16 Td\n");
             }
@@ -682,65 +662,44 @@ public class MainGU extends JFrame {
 
         byte[] streamBytes = stream.toString().getBytes("ISO-8859-1");
 
-        // ── Objets PDF ────────────────────────────────────────────
         int[] offsets = new int[7];
         java.io.ByteArrayOutputStream bos = new java.io.ByteArrayOutputStream();
 
-        // Header PDF
-        byte[] header = "%PDF-1.4\n".getBytes();
-        bos.write(header);
+        bos.write("%PDF-1.4\n".getBytes());
 
-        // Objet 1 : Catalogue
         offsets[1] = bos.size();
-        String obj1 = "1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n";
-        bos.write(obj1.getBytes());
+        bos.write("1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n".getBytes());
 
-        // Objet 2 : Pages
         offsets[2] = bos.size();
-        String obj2 = "2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n";
-        bos.write(obj2.getBytes());
+        bos.write("2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n".getBytes());
 
-        // Objet 3 : Page
         offsets[3] = bos.size();
-        String obj3 = "3 0 obj\n<< /Type /Page /Parent 2 0 R "
+        bos.write(("3 0 obj\n<< /Type /Page /Parent 2 0 R "
                 + "/MediaBox [0 0 595 842] "
                 + "/Contents 4 0 R "
-                + "/Resources << /Font << /F1 5 0 R >> >> >>\nendobj\n";
-        bos.write(obj3.getBytes());
+                + "/Resources << /Font << /F1 5 0 R >> >> >>\nendobj\n").getBytes());
 
-        // Objet 4 : Contenu
         offsets[4] = bos.size();
-        String obj4head = "4 0 obj\n<< /Length " + streamBytes.length + " >>\nstream\n";
-        bos.write(obj4head.getBytes());
+        bos.write(("4 0 obj\n<< /Length " + streamBytes.length + " >>\nstream\n").getBytes());
         bos.write(streamBytes);
         bos.write("\nendstream\nendobj\n".getBytes());
 
-        // Objet 5 : Police Helvetica
         offsets[5] = bos.size();
-        String obj5 = "5 0 obj\n<< /Type /Font /Subtype /Type1 "
-                + "/BaseFont /Helvetica >>\nendobj\n";
-        bos.write(obj5.getBytes());
+        bos.write("5 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>\nendobj\n".getBytes());
 
-        // ── Table de références croisées (xref) ───────────────────
         int xrefOffset = bos.size();
         StringBuilder xref = new StringBuilder();
-        xref.append("xref\n");
-        xref.append("0 6\n");
-        xref.append("0000000000 65535 f \n");
-        for (int i = 1; i <= 5; i++) {
+        xref.append("xref\n0 6\n0000000000 65535 f \n");
+        for (int i = 1; i <= 5; i++)
             xref.append(String.format("%010d 00000 n \n", offsets[i]));
-        }
         bos.write(xref.toString().getBytes());
 
-        // ── Trailer ───────────────────────────────────────────────
-        String trailer = "trailer\n<< /Size 6 /Root 1 0 R >>\n"
-                + "startxref\n" + xrefOffset + "\n%%EOF\n";
-        bos.write(trailer.getBytes());
+        bos.write(("trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n" + xrefOffset + "\n%%EOF\n").getBytes());
 
         fos.write(bos.toByteArray());
         fos.close();
     }
-    // ── IMPRESSION ────────────────────────────────────────────
+
     private void imprimerRecu() {
         if (currentClientId == -1) {
             JOptionPane.showMessageDialog(this,
@@ -780,7 +739,7 @@ public class MainGU extends JFrame {
     private void setStatus(String msg) {
         if (statusLabel != null) statusLabel.setText(msg);
     }
-    
+
     private void afficherFormulaireFacture() {
         if (currentClientId == -1) {
             JOptionPane.showMessageDialog(this,
@@ -808,14 +767,16 @@ public class MainGU extends JFrame {
                 long numComp = Long.parseLong(tfNumComp.getText().trim());
                 double conso = Double.parseDouble(tfConso.getText().trim());
 
-                Client client = new Client(currentClientNom, currentClientAddr);
-                client.sauvegarder();
-
                 Compteur compteur = new Compteur(currentClientId, conso, numComp);
                 compteur.sauvegarder();
 
-                Facture facture = new Facture(client, compteur);
-                facture.sauvegarder();
+                String sql = "INSERT INTO factures (montant, idclient, numcompteur, datefacture) VALUES (?, ?, ?, date('now'))";
+                java.sql.Connection conn = ConnexionDB.getConnexion();
+                java.sql.PreparedStatement ps = conn.prepareStatement(sql);
+                ps.setDouble(1, conso * Facture.TARIF_KWH);
+                ps.setInt(2, currentClientId);
+                ps.setLong(3, numComp);
+                ps.executeUpdate();
 
                 setStatus("✅ Facture créée avec succès !");
                 chargerFacturesClient();
@@ -828,5 +789,3 @@ public class MainGU extends JFrame {
         }
     }
 }
-
-
