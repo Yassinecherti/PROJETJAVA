@@ -22,7 +22,7 @@ public class ConnexionGU extends JFrame {
 
     // ── Fichier login ─────────────────────────────────────────
     private static final String FICHIER_LOGIN = "dernier_login.txt";
-
+    private int currentClientId = -1;
     // ── Connexion ─────────────────────────────────────────────
     private JTextField     tfLogin;
     private JPasswordField tfPassword;
@@ -51,7 +51,7 @@ public class ConnexionGU extends JFrame {
     }
 
     public ConnexionGU() {
-        setTitle("GestionFacturation — Connexion");
+        setTitle("EDIFacturation — Connexion");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(440, 600);
         setResizable(false);
@@ -84,7 +84,7 @@ public class ConnexionGU extends JFrame {
         logo.setFont(new Font("SansSerif", Font.PLAIN, 36));
         logo.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JLabel titre = new JLabel("GestionFactu");
+        JLabel titre = new JLabel("EDIFactu");
         titre.setFont(new Font("Monospaced", Font.BOLD, 20));
         titre.setForeground(TEXT);
         titre.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -200,33 +200,11 @@ public class ConnexionGU extends JFrame {
         p.add(Box.createVerticalStrut(8));
         p.add(bConnexion);
         p.add(Box.createVerticalStrut(16));
-        p.add(buildFooterConnexion());
         return p;
+        
     }
 
-    private JPanel buildFooterConnexion() {
-        JPanel f = new JPanel(new FlowLayout(FlowLayout.CENTER, 4, 0));
-        f.setBackground(CARD);
-        f.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        JLabel txt  = new JLabel("Premiere fois ?");
-        txt.setFont(new Font("SansSerif", Font.PLAIN, 11));
-        txt.setForeground(MUTED);
-
-        JLabel lien = new JLabel("Creer un compte");
-        lien.setFont(new Font("SansSerif", Font.BOLD, 11));
-        lien.setForeground(ACCENT);
-        lien.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        lien.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent e) {
-                switchOnglet("inscription");
-            }
-        });
-
-        f.add(txt);
-        f.add(lien);
-        return f;
-    }
+    
 
     // ══════════════════════════════════════════════════════════
     // PANEL INSCRIPTION
@@ -251,7 +229,7 @@ public class ConnexionGU extends JFrame {
         JButton bCreer = actionBtn("Creer mon compte", GOLD);
         bCreer.setForeground(Color.BLACK);
         bCreer.addActionListener(e -> creerCompte());
-
+        
         p.add(fieldGroup("Nom complet *",               tfNom));
         p.add(Box.createVerticalStrut(10));
         p.add(fieldGroup("Adresse *",                   tfAdresse));
@@ -375,6 +353,7 @@ public class ConnexionGU extends JFrame {
 
             if (rs.next()) {
                 String nomClient = rs.getString("nom");
+                currentClientId = Integer.parseInt(login);
                 ouvrirApplication(nomClient);
             } else {
                 lblErreur.setForeground(DANGER);
@@ -392,7 +371,7 @@ public class ConnexionGU extends JFrame {
         lblErreur.setForeground(ACCENT);
         lblErreur.setText("Bienvenue " + nomClient + " !");
         Timer timer = new Timer(800, e -> {
-            new MainGU().setVisible(true);
+        	new MainGU(currentClientId).setVisible(true);
             dispose();
         });
         timer.setRepeats(false);

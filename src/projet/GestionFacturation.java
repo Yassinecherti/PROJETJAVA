@@ -22,7 +22,7 @@ public class GestionFacturation {
 
         String numero = String.valueOf(numerocomp);
         if (numero.length() != 14) {
-            System.out.println("❌ Numéro invalide - rien sauvegardé !");
+            System.out.println(" Numéro invalide - rien sauvegardé !");
             return; 
         }
 
@@ -35,12 +35,12 @@ public class GestionFacturation {
         this.compteurs.add(compteur);
         compteur.sauvegarder();
 
-        System.out.println("✓ Client ajouté avec succès.\n");
+        System.out.println(" Client ajouté avec succès.");
     }
 
     public void afficherTousLesClients() {
         if (this.clients.isEmpty()) {
-            System.out.println("Aucun client enregistré.\n");
+            System.out.println("Aucun client enregistré.");
         } else {
             for(int i = 0; i < this.clients.size(); ++i) {
                 Facture f = new Facture((Client)this.clients.get(i), (Compteur)this.compteurs.get(i));

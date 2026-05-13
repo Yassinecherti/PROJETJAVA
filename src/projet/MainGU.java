@@ -45,8 +45,9 @@ public class MainGU extends JFrame {
         });
     }
 
-    public MainGU() {
-        setTitle("GestionFacturation — Factures Client");
+    public MainGU(int clientId) {
+        this.currentClientId = clientId;
+        setTitle("EDIFacturation — Factures Client");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(1100, 720);
         setMinimumSize(new Dimension(900, 600));
@@ -57,8 +58,10 @@ public class MainGU extends JFrame {
         add(buildSidebar(),   BorderLayout.WEST);
         add(buildCenter(),    BorderLayout.CENTER);
         add(buildStatusBar(), BorderLayout.SOUTH);
+        chargerInfosClient();
+        chargerFacturesClient();
     }
-
+    
     private JPanel buildSidebar() {
         JPanel side = new JPanel();
         side.setLayout(new BoxLayout(side, BoxLayout.Y_AXIS));
@@ -74,7 +77,7 @@ public class MainGU extends JFrame {
                 new EmptyBorder(22, 20, 18, 20)));
         logo.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        JLabel t1 = new JLabel("GestionFactu");
+        JLabel t1 = new JLabel("EDIFactu");
         t1.setFont(new Font("Monospaced", Font.BOLD, 17));
         t1.setForeground(TEXT);
         t1.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -150,7 +153,6 @@ public class MainGU extends JFrame {
         nav.add(bQuit);
 
         side.add(logo);
-        side.add(searchPanel);
         side.add(fichePanel);
         side.add(Box.createVerticalGlue());
         side.add(nav);
@@ -297,7 +299,7 @@ public class MainGU extends JFrame {
         title.setFont(new Font("Monospaced", Font.BOLD, 11));
         title.setForeground(MUTED);
 
-        String[] cols = {"ID Facture", "N° Compteur", "Consommation (kWh)", "Montant (EUR)", "Date"};
+        String[] cols = {"ID Facture", "N° Compteur", "Consommation (kWh)", "Montant (EURO)", "Date"};
         tableModel = new DefaultTableModel(cols, 0) {
             public boolean isCellEditable(int r, int c) { return false; }
         };
@@ -733,6 +735,22 @@ public class MainGU extends JFrame {
         if (job.printDialog()) {
             try { job.print(); setStatus("Impression envoyée."); }
             catch (Exception ex) { setStatus("Erreur : " + ex.getMessage()); }
+        }
+    }
+    private void chargerInfosClient() {
+        try {
+            Connection conn = ConnexionDB.getConnexion();
+            PreparedStatement ps = conn.prepareStatement(
+                "SELECT nom, adresse FROM clients WHERE idclient = ?");
+            ps.setInt(1, currentClientId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                currentClientNom  = rs.getString("nom");
+                currentClientAddr = rs.getString("adresse");
+                mettreAJourFiche();
+            }
+        } catch (Exception e) {
+            setStatus("Erreur : " + e.getMessage());
         }
     }
 
