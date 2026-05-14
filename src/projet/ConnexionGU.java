@@ -202,6 +202,7 @@ public class ConnexionGU extends JFrame {
         p.add(Box.createVerticalStrut(16));
         return p;
         
+        
     }
 
     

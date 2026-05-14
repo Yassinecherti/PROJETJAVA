@@ -22,7 +22,7 @@ public class MainGU extends JFrame {
     private static final Color BORDER  = new Color(42,  45,  58);
     private static final Color DANGER  = new Color(255, 77,  109);
 
-    private JTextField        tfRecherche;
+    
     private JLabel            lblNom, lblAdresse, lblIdClient, lblNbFactures, lblTotalClient;
     private DefaultTableModel tableModel;
     private JLabel            statusLabel;
@@ -91,52 +91,9 @@ public class MainGU extends JFrame {
         logo.add(Box.createVerticalStrut(4));
         logo.add(t2);
 
-        JPanel searchPanel = new JPanel();
-        searchPanel.setLayout(new BoxLayout(searchPanel, BoxLayout.Y_AXIS));
-        searchPanel.setBackground(CARD);
-        searchPanel.setBorder(new CompoundBorder(
-                new MatteBorder(0, 0, 1, 0, BORDER),
-                new EmptyBorder(16, 14, 16, 14)));
-        searchPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-
-        JLabel lSearch = new JLabel("RECHERCHER UN CLIENT");
-        lSearch.setFont(new Font("Monospaced", Font.BOLD, 10));
-        lSearch.setForeground(MUTED);
-        lSearch.setAlignmentX(Component.LEFT_ALIGNMENT);
-
-        tfRecherche = new JTextField();
-        tfRecherche.setBackground(CARD2);
-        tfRecherche.setForeground(TEXT);
-        tfRecherche.setCaretColor(ACCENT);
-        tfRecherche.setFont(new Font("SansSerif", Font.PLAIN, 13));
-        tfRecherche.setBorder(new CompoundBorder(
-                new LineBorder(BORDER, 1),
-                new EmptyBorder(8, 10, 8, 10)));
-        tfRecherche.setAlignmentX(Component.LEFT_ALIGNMENT);
-        tfRecherche.setMaximumSize(new Dimension(Integer.MAX_VALUE, 38));
-        tfRecherche.addActionListener(e -> rechercherClient());
-
-        JButton bSearch = new JButton("Rechercher");
-        bSearch.setFont(new Font("SansSerif", Font.BOLD, 12));
-        bSearch.setForeground(Color.BLACK);
-        bSearch.setBackground(ACCENT);
-        bSearch.setFocusPainted(false);
-        bSearch.setBorderPainted(false);
-        bSearch.setOpaque(true);
-        bSearch.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        bSearch.setBorder(new EmptyBorder(9, 14, 9, 14));
-        bSearch.setAlignmentX(Component.LEFT_ALIGNMENT);
-        bSearch.setMaximumSize(new Dimension(Integer.MAX_VALUE, 38));
-        bSearch.addActionListener(e -> rechercherClient());
-
-        searchPanel.add(lSearch);
-        searchPanel.add(Box.createVerticalStrut(8));
-        searchPanel.add(tfRecherche);
-        searchPanel.add(Box.createVerticalStrut(8));
-        searchPanel.add(bSearch);
-
         JPanel fichePanel = buildFicheClient();
 
+        
         JPanel nav = new JPanel();
         nav.setLayout(new BoxLayout(nav, BoxLayout.Y_AXIS));
         nav.setBackground(CARD);
@@ -392,54 +349,11 @@ public class MainGU extends JFrame {
         return bar;
     }
 
-    private void rechercherClient() {
-        String q = tfRecherche.getText().trim();
-        if (q.isEmpty()) { setStatus("Saisissez un nom ou un ID."); return; }
-
-        try {
-            Connection conn = ConnexionDB.getConnexion();
-            PreparedStatement ps;
-
-            if (q.matches("\\d+")) {
-                ps = conn.prepareStatement(
-                    "SELECT idclient, nom, adresse FROM clients WHERE idclient = ?");
-                ps.setInt(1, Integer.parseInt(q));
-            } else {
-                ps = conn.prepareStatement(
-                    "SELECT idclient, nom, adresse FROM clients WHERE nom LIKE ?");
-                ps.setString(1, "%" + q + "%");
-            }
-
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                currentClientId   = rs.getInt("idclient");
-                currentClientNom  = rs.getString("nom");
-                currentClientAddr = rs.getString("adresse");
-                mettreAJourFiche();
-                chargerFacturesClient();
-            } else {
-                setStatus("Aucun client trouvé pour : " + q);
-                viderFiche();
-            }
-        } catch (Exception e) {
-            setStatus("Erreur : " + e.getMessage());
-        }
-    }
-
+    
     private void mettreAJourFiche() {
         lblIdClient.setText("ID : "      + currentClientId);
         lblNom.setText("Nom : "          + currentClientNom);
         lblAdresse.setText("Adresse : "  + currentClientAddr);
-    }
-
-    private void viderFiche() {
-        currentClientId = -1;
-        lblIdClient.setText("ID : —");
-        lblNom.setText("Nom : —");
-        lblAdresse.setText("Adresse : —");
-        lblNbFactures.setText("Factures : —");
-        lblTotalClient.setText("Total : —");
-        tableModel.setRowCount(0);
     }
 
     private void chargerFacturesClient() {
