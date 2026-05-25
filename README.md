@@ -11,5 +11,5 @@ Vous pouvez accéder au code source en cliquant [ici](https://github.com/Yassine
 Installation de EDI ENERGIE consiste à:
 - Cliquer [ici](https://github.com/Yassinecherti/PROJETJAVA/releases/tag/java) et cliquer sur EDIENERGIE.zip.
 - Décompresser le fichier téléchargé.
-- Télécharger l'environnement jdk-21 du fichier nommé jdk-21_windows-*64_win pour la version windows si vous ne possedez pas de SE ## Windows cliquer [ici]( https://adoptium.net/temurin/releases/?version=21).
+- Télécharger l'environnement jdk-21 du fichier nommé jdk-21_windows-*64_win pour la version windows si vous ne possedez pas de SE Windows cliquer [ici]( https://adoptium.net/temurin/releases/?version=21).
 - Lancer l'application en double cliquant sur le fichier EDI.exe
