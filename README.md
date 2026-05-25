@@ -3,10 +3,13 @@
 ## Presentation
 EDI ENERGIE est une application Java qui génère automatiquement une facture à un utilisateur.
 ## Documentation
-Vous pouvez acceder à la documentation en cliquant [ici](https://github.com/Yassinecherti/PROJETJAVA/tree/EDI/documentation).
-
-Vous pouvez acceder à la video en cliquant [ici](https://github.com/Yassinecherti/PROJETJAVA/blob/EDI/documentation/Ilustration%20de%20EDI.mp4).
+Vous pouvez accéder à la documentation en cliquant [ici](https://github.com/Yassinecherti/PROJETJAVA/tree/EDI/documentation).
+Vous pouvez accéder à la video en cliquant [ici](https://github.com/Yassinecherti/PROJETJAVA/blob/EDI/documentation/Ilustration%20de%20EDI.mp4).
 ## Code Source
-Vous pouvez acceder au code source en cliquant [ici](https://github.com/Yassinecherti/PROJETJAVA/tree/EDI/src/projet).
-## Release
-vous pouvez acceder au Release en cliquant [ici](https://github.com/Yassinecherti/PROJETJAVA/releases/tag/java).
+Vous pouvez accéder au code source en cliquant [ici](https://github.com/Yassinecherti/PROJETJAVA/tree/EDI/src/projet).
+## Installation 
+Installation de EDI ENERGIE consiste à:
+- Cliquer [ici](https://github.com/Yassinecherti/PROJETJAVA/releases/tag/java) et cliquer sur EDIENERGIE.zip.
+- Décompresser le fichier téléchargé.
+- Télécharger un environnement jdk-21 nommé jdk-21_windows-*64_win pour la version windows si vous ne possedez pas un SE windows cliquer [ici]( https://adoptium.net/temurin/releases/?version=21).
+- Lancer l'application en double cliquant sur le fichier EDI.exe
